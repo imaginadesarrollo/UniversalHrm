@@ -6,6 +6,7 @@
 **.iml
 /.idea
 *.apk
+*.jar
 /ANT-Android-SDKs
 /universalhrm/ANT-Android-SDKs
 
