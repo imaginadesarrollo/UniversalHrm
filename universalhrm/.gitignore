@@ -1,0 +1,11 @@
+.gradle
+/local.properties
+.DS_Store
+/build
+/captures
+**.iml
+/.idea
+*.apk
+*.jar
+*.class
+/ANT-Android-SDKs
