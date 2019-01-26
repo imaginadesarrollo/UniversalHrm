@@ -22,5 +22,6 @@
     <string name="select_type_of_Bluetooth_device">Select type of Bluetooth device</string>
     <string name="scanning">Scanning</string>
     <string name="battery_level_value">Battery level: %1$d</string>
+    <string name="heart_rate_value">Heart rate: %1$d</string>
     <string name="bpms">%1$d bpm</string>
 </resources>

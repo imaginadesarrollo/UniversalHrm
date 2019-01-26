@@ -1,6 +1,5 @@
 package com.imaginadesarrollo.universalhrm.main
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import com.imaginadesarrollo.universalhrm.manager.HRDeviceRef
 /**
  * Created by kike on 19/08/2018.
  */
-class DeviceAdapter(context: Context): RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
+class DeviceAdapter(val callback: OnDeviceSelected): RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
 
     private val deviceList = mutableListOf<HRDeviceRef>()
 
@@ -41,8 +40,13 @@ class DeviceAdapter(context: Context): RecyclerView.Adapter<DeviceAdapter.Device
 
                 setOnClickListener {
                     isChecked = true
+                    callback.onDeviceSelected(item)
                 }
             }
         }
+    }
+
+    interface OnDeviceSelected{
+        fun onDeviceSelected(device: HRDeviceRef)
     }
 }

@@ -46,7 +46,7 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
     }
 
     override fun setHeartRateValue(value: Int) {
-        hrValue.text = getString(R.string.battery_level_value, value)
+        hrValue.text = getString(R.string.bpms, value)
     }
 
     override fun setHeartRateMonitorName(name: String) {
