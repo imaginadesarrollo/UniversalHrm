@@ -1,59 +1,52 @@
 package com.imaginadesarrollo.universalhrm.main
 
-import android.annotation.SuppressLint
-import android.content.Context
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.TextView
+import android.widget.CheckedTextView
 import com.imaginadesarrollo.universalhrm.manager.HRDeviceRef
-import java.util.*
 
 /**
  * Created by kike on 19/08/2018.
  */
-@SuppressLint("InflateParams")
-internal class DeviceAdapter
-// --Commented out by Inspection (2017-08-11 13:06):Resources resources = null;
+class DeviceAdapter(val callback: OnDeviceSelected): RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
 
-(ctx: Context) : BaseAdapter() {
+    private val deviceList = mutableListOf<HRDeviceRef>()
 
-    val deviceList = ArrayList<HRDeviceRef>()
-    var inflater: LayoutInflater? = null
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder =
+        DeviceViewHolder(LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_single_choice, parent, false))
 
-    init {
-        inflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        //resources = ctx.getResources();
+    override fun getItemCount(): Int = deviceList.size
+
+    override fun onBindViewHolder(holder: DeviceViewHolder, position: Int) {
+        holder.bind(deviceList[position])
     }
 
-    override fun getCount(): Int {
-        return deviceList.size
+    fun addDevice(device: HRDeviceRef) {
+        deviceList.add(device)
+        notifyDataSetChanged()
     }
 
-    override fun getItem(position: Int): Any {
-        return deviceList[position]
+    fun clear() {
+        deviceList.clear()
     }
 
-    override fun getItemId(position: Int): Long {
-        return 0
-    }
+    inner class DeviceViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        fun bind(item: HRDeviceRef) = with(itemView){
+            (itemView as? CheckedTextView)?.apply {
+                tag = item
+                text = item.name
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val row: View
-        if (convertView == null) {
-            //Note: Parent is AlertDialog so parent in inflate must be null
-            row = inflater!!.inflate(android.R.layout.simple_list_item_single_choice, null)
-        } else {
-            row = convertView
+                setOnClickListener {
+                    isChecked = true
+                    callback.onDeviceSelected(item)
+                }
+            }
         }
-        val tv = row.findViewById<TextView>(android.R.id.text1)
-        //tv.setTextColor(resources.getColor(R.color.black));
+    }
 
-        val btDevice = deviceList[position]
-        tv.tag = btDevice
-        tv.text = btDevice.name
-
-        return tv
+    interface OnDeviceSelected{
+        fun onDeviceSelected(device: HRDeviceRef)
     }
 }

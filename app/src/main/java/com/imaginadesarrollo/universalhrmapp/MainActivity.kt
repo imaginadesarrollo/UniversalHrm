@@ -1,10 +1,8 @@
 package com.imaginadesarrollo.universalhrmapp
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
 import com.imaginadesarrollo.universalhrm.UniversalHrm
 import com.karumi.dexter.Dexter
@@ -15,7 +13,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : Activity(), HrmCallbackMethods {
+class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMethods {
 
     private val universalHrm: UniversalHrm by lazy { UniversalHrm(this) }
 
@@ -26,6 +24,8 @@ class MainActivity : Activity(), HrmCallbackMethods {
         scanButton.setOnClickListener {
             checkPermissionsAndScan()
         }
+
+        universalHrm.disconnect()
     }
 
     private fun checkPermissionsAndScan(){
@@ -41,14 +41,12 @@ class MainActivity : Activity(), HrmCallbackMethods {
                 }).check()
     }
 
-
-
     override fun setBatteryLevel(level: Int) {
-        batteryLevel.text = "Battery level: $level"
+        batteryLevel.text = getString(R.string.battery_level_value, level)
     }
 
     override fun setHeartRateValue(value: Int) {
-        hrValue.text = "$value bpm"
+        hrValue.text = getString(R.string.bpms, value)
     }
 
     override fun setHeartRateMonitorName(name: String) {
@@ -66,13 +64,8 @@ class MainActivity : Activity(), HrmCallbackMethods {
             providerName.text = pName
     }
 
-    override fun deviceNotSupported() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.Heart_rate_monitor_is_not_supported_for_your_device))
-        val listener = DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() }
-        builder.setNegativeButton(getString(R.string.ok_rats), listener)
-        builder.show()
-    }
+    override fun deviceNotSupported() =
+        Toast.makeText(this, R.string.heart_rate_monitor_is_not_supported_for_your_device, Toast.LENGTH_LONG).show()
 
     override fun scanCanceled() {
         // FYI
@@ -80,7 +73,7 @@ class MainActivity : Activity(), HrmCallbackMethods {
 
     override fun onDeviceConnected() {
         connectButton.visibility = View.VISIBLE
-        connectButton.text = "Disconnect"
+        connectButton.text = getString(R.string.disconnect)
         connectButton.setOnClickListener {
             universalHrm.disconnect()
         }
@@ -88,7 +81,7 @@ class MainActivity : Activity(), HrmCallbackMethods {
 
     override fun onDeviceDisconnected() {
         connectButton.visibility = View.VISIBLE
-        connectButton.text = "Connect"
+        connectButton.text = getString(R.string.connect)
         connectButton.setOnClickListener {
             universalHrm.connect()
         }
@@ -96,10 +89,10 @@ class MainActivity : Activity(), HrmCallbackMethods {
     }
 
     private fun resetFields(){
-        deviceName.text = "Device name (not connected)"
-        deviceAddress.text = "Device address (not connected)"
-        providerName.text = "Device provider (not connected)"
-        batteryLevel.text = "Battery level: 0"
-        hrValue.text = "0 bpm"
+        deviceName.text = getString(R.string.device_name_empty)
+        deviceAddress.text = getString(R.string.device_address_empty)
+        providerName.text = getString(R.string.device_provider_empty)
+        batteryLevel.text = getString(R.string.battery_level_value, 0)//"Battery level: 0"
+        hrValue.text = getString(R.string.bpms, 0)//"0 bpm"
     }
 }
