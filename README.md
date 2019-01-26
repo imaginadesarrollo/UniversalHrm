@@ -2,18 +2,29 @@
 
 Library to manage all types of heart rate monitor devices.
 
-How to use it:
+##How to use it:
 
 1- Add the gradle dependency:
 ```
 implementation "com.imaginadesarrollo.universalhrm:universalhrm:1.0.0"
 ```
 
-Implement interface HrmCallbackMethods
+2- Implement interface HrmCallbackMethods
 ```
 class YourActivity : Activity(), HrmCallbackMethods{
     private val universalHrm: UniversalHrm by lazy { UniversalHrm(this) }
-    ...
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
+    
+            scanButton.setOnClickListener {
+                // Check location permissions first.
+                universalHrm.scan()
+            }
+    
+            universalHrm.disconnect()
+        }
 }
 ```
 
@@ -47,7 +58,7 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
 
 ```
 
-To clone the repo:
+##To clone the repo:
 
 ```
 git clone https://github.com/imaginadesarrollo/UniversalHrm
@@ -56,10 +67,13 @@ git clone https://github.com/ant-wireless/ANT-Android-SDKs
 
 ```
 
-Tested devices:
+##Tested devices:
 
 - Polar H7
 - 
 - 
 - 
+
+## License
+Unless otherwise stated, the code for this project is under GNU GPL v3. See [LICENSE](LICENSE) for more information.
 
