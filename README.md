@@ -2,7 +2,7 @@
 
 Library to manage all types of heart rate monitor devices.
 
-##How to use it:
+## How to use it:
 
 1- Add the gradle dependency:
 ```
@@ -58,7 +58,7 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
 
 ```
 
-##To clone the repo:
+## To clone the repo:
 
 ```
 git clone https://github.com/imaginadesarrollo/UniversalHrm
@@ -67,7 +67,7 @@ git clone https://github.com/ant-wireless/ANT-Android-SDKs
 
 ```
 
-##Tested devices:
+## Tested devices:
 
 - Polar H7
 - 
