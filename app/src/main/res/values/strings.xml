@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">UniversalHrmApp</string>
+    <string name="device_name_empty">Device name (not connected)</string>
+    <string name="device_address_empty">Device address (not connected)</string>
+    <string name="device_provider_empty">Device provider (not connected)</string>
 </resources>
