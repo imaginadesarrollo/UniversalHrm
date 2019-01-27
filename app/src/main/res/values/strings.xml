@@ -3,4 +3,14 @@
     <string name="device_name_empty">Device name (not connected)</string>
     <string name="device_address_empty">Device address (not connected)</string>
     <string name="device_provider_empty">Device provider (not connected)</string>
+
+    <string name="battery_level_value">Battery level: %1$d</string>
+    <string name="heart_rate_value">Heart rate: %1$d</string>
+    <string name="bpms">%1$d bpm</string>
+
+    <string name="disconnect">Disconnect</string>
+    <string name="connecting">Connecting</string>
+    <string name="connect">connect</string>
+    <string name="heart_rate_monitor_is_not_supported_for_your_device">Heart rate monitor is not supported for your device</string>
+
 </resources>
