@@ -1,14 +1,20 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-group = "com.imaginadesarrollo.universalhrm"
-version = "1.0.1"
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion project.sdk
+    defaultConfig {
+        minSdkVersion project.minSdk
+        targetSdkVersion project.sdk
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    lintOptions{
+        abortOnError false
+    }
 
     sourceSets {
         main {
@@ -21,17 +27,6 @@ android {
             assets.srcDirs = ['assets']
         }
     }
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 28
-        versionCode 2
-        versionName = version
-    }
-}
-
-repositories {
-    google()
-    jcenter()
 }
 
 dependencies {
@@ -41,31 +36,30 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.imaginadesarrollo.universalhrm' //You can either define these here or get them from project conf elsewhere
-            artifactId 'universalhrm'
-            version version
-            artifact "$buildDir/outputs/aar/universalhrm-release.aar" //aar artifact you want to publish
+ext {
+    bintrayRepo = 'UniversalHRM'
+    bintrayName = rootProject.ext.libraryDescription
+    orgName = 'imaginadesarrollo'
 
-            //generate pom nodes for dependencies
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                configurations.compile.allDependencies.each { dependency ->
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', dependency.group)
-                    dependencyNode.appendNode('artifactId', dependency.name)
-                    dependencyNode.appendNode('version', dependency.version)
-                }
-            }
-        }
-    }
+    publishedGroupId = rootProject.ext.libraryGroup
+    libraryName = rootProject.ext.libraryDescription
+    artifact = rootProject.ext.libraryName
 
-    //publish to filesystem repo
-    repositories{
-        maven {
-            url "$buildDir/repo"
-        }
-    }
+    libraryDescription = rootProject.ext.libraryDescription
+
+    siteUrl = rootProject.ext.github
+    gitUrl = rootProject.ext.github+'.git'
+
+    libraryVersion = rootProject.ext.libraryVersion
+
+    developerId = 'kikebodi'
+    developerName = 'Kike Bodí'
+    developerEmail = 'bodi.inf@gmail.com'
+
+    licenseName = 'GNU General Public License v3.0'
+    licenseUrl = 'https://github.com/imaginadesarrollo/UniversalHrm/blob/master/LICENSE'
+    allLicenses = ["GPL-3.0"]
 }
+
+apply from: rootProject.file('gradle/install-v1.gradle')
+apply from: rootProject.file('gradle/bintray-android-v1.gradle')
