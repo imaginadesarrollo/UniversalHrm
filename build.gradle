@@ -28,8 +28,15 @@ allprojects {
 ext {
     sdk = 28
     minSdk = 19
-    buildToolsVersion = '29.0.3'
+
+    buildToolsVersion = '28.0.0'
     supportVersion = "28.0.0"
+    constraintLayoutVersion = "1.1.3"
+    jUnitVersion = "4.12"
+    testRunnerVersion = "1.0.2"
+    expressoVersion = "3.0.2"
+    karumiDexterVersion = "5.0.0"
+
 
     github = 'https://github.com/imaginadesarrollo/UniversalHrm'
 
