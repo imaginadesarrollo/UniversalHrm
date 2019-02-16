@@ -37,9 +37,9 @@ dependencies {
 }
 
 ext {
-    bintrayRepo = 'UniversalHRM'
-    bintrayName = rootProject.ext.libraryDescription
-    orgName = 'imaginadesarrollo'
+    bintrayRepo = 'maven'
+    bintrayName = 'universalhrm'
+    orgName = 'kikebodi'
 
     publishedGroupId = rootProject.ext.libraryGroup
     libraryName = rootProject.ext.libraryDescription

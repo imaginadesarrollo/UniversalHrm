@@ -35,7 +35,7 @@ ext {
 
     libraryGroup = 'com.imaginadesarrollo.universalhrm'
     libraryName = 'universalhrm'
-    libraryVersion = "1.0.3"
+    libraryVersion = "1.0.1"
     libraryDescription = 'UniversalHRM'
 }
 
