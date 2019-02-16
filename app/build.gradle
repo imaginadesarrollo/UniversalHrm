@@ -30,7 +30,7 @@ dependencies {
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$expressoVersion"
 
-    //implementation project(path: ':universalhrm')
-    implementation "com.imaginadesarrollo.universalhrm:universalhrm:$libraryVersion"
+    implementation project(path: ':universalhrm')
+    //implementation "com.imaginadesarrollo.universalhrm:universalhrm:$libraryVersion"
     implementation "com.karumi:dexter:$karumiDexterVersion"
 }
