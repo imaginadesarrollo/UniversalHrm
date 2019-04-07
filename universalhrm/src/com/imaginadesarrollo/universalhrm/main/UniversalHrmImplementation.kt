@@ -174,7 +174,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
         open()
     }
 
-    private fun connect2() {
+    private fun connect2() { // or reconnect
         stopTimer()
         if (!::hrProvider.isInitialized || selectedHr?.address.isNullOrBlank()) {
             return
@@ -190,6 +190,28 @@ internal class UniversalHrmImplementation(private val activity: android.support.
         Log.d(TAG, hrProvider.providerName + ".connect(" + selectedHr?.name + ")")
 
         hrProvider.connect(selectedHr/*HRDeviceRef.create(hrProvider.providerName, btName, btAddress)*/)
+    }
+
+    private val reconnectingTime = 2000 // 2 sec
+    private var numTry = 1
+    private var ongoing = false
+    private fun reconnect(){
+        if(!ongoing){
+            if(isConnected()){
+                numTry = 1
+                ongoing = false
+            }else{
+                //stopTimer()
+                ongoing = true
+                val wait = reconnectingTime.times(numTry).toLong()
+                Log.d(TAG, "Reconnecting in ${wait.div(1000)} seconds")
+                Handler().postDelayed({
+                    connect2()
+                    ongoing = false
+                }, wait)
+            }
+        }
+
     }
 
 
@@ -225,12 +247,14 @@ internal class UniversalHrmImplementation(private val activity: android.support.
 
     private fun readHR() {
         if (hrProviderSelected == true && ::hrProvider.isInitialized) {
-            hrProvider.hrData.let {
+            hrProvider.hrData?.let {
                 var hrValue: Long = 0
                 if (it.hasHeartRate)
                     hrValue = it.hrValue
 
                 callback.setHeartRateValue(hrValue.toInt())
+            } ?: kotlin.run {
+                reconnect()
             }
         }
     }

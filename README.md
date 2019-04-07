@@ -70,9 +70,19 @@ git clone https://github.com/ant-wireless/ANT-Android-SDKs
 ## Tested devices:
 
 - Polar H7
-- 
-- 
-- 
+
+## Devices to test #helpneeded:
+
+- Zephyr Chest strap (Bluetooth)
+- Garmin Chest strap (Ant+)
+- Suunto Chest strap (Ant+)
+
+
+## Wishlist:
+
+- Apple Watch
+- Fitbit Charge 3
+- Garmin Vivoactive 3
 
 ## License
 Unless otherwise stated, the code for this project is under GNU GPL v3. See [LICENSE](LICENSE) for more information.
