@@ -51,6 +51,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     override fun disconnect() {
         if(::hrProvider.isInitialized){
             Log.d(TAG, hrProvider.providerName + ".disconnect()")
+            stopTimer()
             hrProvider.disconnect()
             callback.onDeviceDisconnected()
         }
