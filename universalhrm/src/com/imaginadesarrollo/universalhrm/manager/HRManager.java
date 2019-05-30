@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
+import com.imaginadesarrollo.universalhrm.BuildConfig;
 import com.imaginadesarrollo.universalhrm.R;
 
 import java.lang.reflect.Constructor;
@@ -115,7 +116,6 @@ public class HRManager {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         boolean experimental = prefs
                 .getBoolean(res.getString(R.string.pref_bt_experimental), false);
-        boolean mock = prefs.getBoolean(res.getString(R.string.pref_bt_mock), false);
 
         List<HRProvider> providers = new ArrayList<>();
         if (AndroidBLEHRProvider.checkLibrary(ctx)) {
@@ -138,7 +138,7 @@ public class HRManager {
             providers.add(new AntPlus(ctx));
         }
 
-        if (mock) {
+        if (BuildConfig.DEBUG) {
             providers.add(new MockHRProvider(ctx));
         }
 

@@ -23,9 +23,6 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     private val handler: Handler by lazy { Handler() }
     private val customBuilder by lazy { DeviceDialogFragment(deviceAdapter) }
 
-    /*private var btName: String = ""
-    private var btAddress: String = ""
-    private var btProviderName: String = ""*/
     private var selectedHr: HRDeviceRef? = null
     private var hrProviderSelected: Boolean = false
 
@@ -33,10 +30,6 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     private lateinit var hrProvider: HRProvider
 
     init {
-        /*btName = retrieveDeviceName()
-        btAddress = retrieveDeviceAddress()
-        btProviderName = retrieveProviderName()*/
-
         selectedHr = retrieveSavedDevice()
 
         providers = HRManager.getHRProviderList(activity)
@@ -118,15 +111,6 @@ internal class UniversalHrmImplementation(private val activity: android.support.
         }
     }
 
-    /*private fun retrieveDeviceName(): String =
-        prefs.getString(activity.getString(R.string.pref_bt_name), "") ?: ""
-
-    private fun retrieveDeviceAddress(): String =
-            prefs.getString(activity.getString(R.string.pref_bt_address), "") ?: ""
-
-    private fun retrieveProviderName(): String =
-            prefs.getString(activity.getString(R.string.pref_bt_provider), "") ?: ""*/
-
     private fun saveDevice(deviceName: String, deviceAddress: String, providerName: String) {
         prefs.edit().apply {
             putString(activity.resources.getString(R.string.pref_bt_name), deviceName)
@@ -175,6 +159,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     }
 
     private fun connect2() { // or reconnect
+        // TODO add feedback. Procesing...
         stopTimer()
         if (!::hrProvider.isInitialized || selectedHr?.address.isNullOrBlank()) {
             return
@@ -183,8 +168,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
             disconnect()
         }
 
-        selectedHr?.name?.let {
-            callback.setHeartRateMonitorName(it) }
+        selectedHr?.name?.let { callback.setHeartRateMonitorName(it) }
         callback.setHeartRateValue(0)
 
         Log.d(TAG, hrProvider.providerName + ".connect(" + selectedHr?.name + ")")
@@ -213,14 +197,6 @@ internal class UniversalHrmImplementation(private val activity: android.support.
         }
 
     }
-
-
-
-
-
-    /*private fun getName(): CharSequence {
-        return if (btName != null && btName!!.isNotEmpty()) btName!! else btAddress!!
-    }*/
 
     private var hrReader: Timer? = null
     private fun startTimer() {
@@ -270,9 +246,6 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     }
 
     private fun clear() {
-        /*btAddress = ""
-        btName = ""
-        btProviderName = ""*/
         selectedHr = null
     }
 
