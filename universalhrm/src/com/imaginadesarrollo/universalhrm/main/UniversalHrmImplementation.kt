@@ -33,7 +33,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
 
 
     override fun scan() {
-        // TODO:  Create an AlertDialog to choose between Bluetooth and ANT+ types.
+        // TODO:  Create an AlertDialog to choose between Bluetooth and ANT+ types
 
         showBluetoothSelector()
     }
