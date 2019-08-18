@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
-import com.imaginadesarrollo.universalhrm.BuildConfig;
 import com.imaginadesarrollo.universalhrm.R;
 
 import java.lang.reflect.Constructor;
@@ -82,10 +81,10 @@ public class HRManager {
             return new Bt20Base.PolarHRM(ctx);
         }
 
-        if (src.contentEquals(AntPlus.NAME)) {
-            if (!AntPlus.checkLibrary(ctx))
+        if (src.contentEquals(AntPlusHRProvider.NAME)) {
+            if (!AntPlusHRProvider.checkLibrary(ctx))
                 return null;
-            HRProvider p = new AntPlus(ctx);
+            HRProvider p = new AntPlusHRProvider(ctx);
             System.err.println("getHRProvider(" + src + ") => " + p);
             return p;
         }
@@ -134,13 +133,13 @@ public class HRManager {
             providers.add(new Bt20Base.StHRMv1(ctx));
         }
 
-        if (AntPlus.checkLibrary(ctx)) {
-            providers.add(new AntPlus(ctx));
+        if (AntPlusHRProvider.checkLibrary(ctx)) {
+            providers.add(new AntPlusHRProvider(ctx));
         }
 
-        if (BuildConfig.DEBUG) {
-            providers.add(new MockHRProvider(ctx));
-        }
+//        if (BuildConfig.DEBUG) {
+//            providers.add(new MockHRProvider(ctx));
+//        }
 
         return providers;
     }

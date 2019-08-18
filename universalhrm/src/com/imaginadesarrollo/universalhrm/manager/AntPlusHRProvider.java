@@ -43,9 +43,9 @@ import java.util.HashSet;
  * @author jonas
  */
 
-class AntPlus extends BtHRBase {
+class AntPlusHRProvider extends BtHRBase implements HRProvider {
 
-    static final String NAME = "AntPlus";
+    static final String NAME = "AntPlusHRProvider";
     private static final String DISPLAY_NAME = "ANT+";
 
     private final Context context;
@@ -74,137 +74,8 @@ class AntPlus extends BtHRBase {
         return false;
     }
 
-    public AntPlus(Context ctx) {
+    public AntPlusHRProvider(Context ctx) {
         this.context = ctx;
-    }
-
-    @Override
-    public String getName() {
-        return DISPLAY_NAME;
-    }
-
-    @Override
-    public String getProviderName() {
-        return NAME;
-    }
-
-    @Override
-    public void open(Handler handler, HRClient hrClient) {
-        log("open()");
-        this.hrClientHandler = handler;
-        this.hrClient = hrClient;
-        hrClient.onOpenResult(true);
-    }
-
-    @Override
-    public void close() {
-        HRClient client = hrClient;
-        hrClient = null;
-        stopScan();
-        disconnect();
-        if (client != null) {
-            client.onCloseResult(true);
-        }
-    }
-
-    @Override
-    public boolean isBondingDevice() {
-        return false;
-    }
-
-    @Override
-    public boolean isScanning() {
-        return mIsScanning;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return mIsConnected;
-    }
-
-    @Override
-    public boolean isConnecting() {
-        return mIsConnecting;
-    }
-
-    @Override
-    public void startScan() {
-        stopScan();
-        log("startScan()");
-        mIsScanning = true;
-        mScanDevices.clear();
-        hrScanCtrl = AntPlusHeartRatePcc.requestAsyncScanController(context, 0, scanReceiver);
-    }
-
-    @Override
-    public void stopScan() {
-        if (mIsScanning || hrScanCtrl != null)
-            log("stopScan()");
-
-        mIsScanning = false;
-        if (hrScanCtrl != null) {
-            hrScanCtrl.closeScanController();
-            hrScanCtrl = null;
-        }
-    }
-
-    private final HashSet<String> mScanDevices = new HashSet<>();
-    private final IAsyncScanResultReceiver scanReceiver = new IAsyncScanResultReceiver() {
-
-        @Override
-        public void onSearchResult(final AsyncScanResultDeviceInfo arg0) {
-            log("onSearchResult(" + arg0 + ")");
-            if (hrClient == null)
-                return;
-
-            if (hrClientHandler == null)
-                return;
-
-            final HRDeviceRef ref = HRDeviceRef.create(NAME, arg0.getDeviceDisplayName(),
-                    Integer.toString(arg0.getAntDeviceNumber()));
-
-            if ((mIsConnecting || mIsConnected) &&
-                    ref.deviceAddress.equals(connectRef.deviceAddress) &&
-                    ref.deviceName.equals(connectRef.deviceName)) {
-
-                stopScan();
-                releaseHandle = AntPlusHeartRatePcc.requestAccess(context,
-                        arg0.getAntDeviceNumber(), 0,
-                        resultReceiver, stateReceiver);
-                return;
-            }
-
-            if (mScanDevices.contains(ref.deviceAddress))
-                return;
-
-            mScanDevices.add(ref.deviceAddress);
-
-            hrClientHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mIsScanning) { // NOTE: mIsScanning in user-thread
-                        hrClient.onScanResult(HRDeviceRef.create(NAME, arg0.getDeviceDisplayName(),
-                                Integer.toString(arg0.getAntDeviceNumber())));
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void onSearchStopped(RequestAccessResult arg0) {
-            log("onSearchStopped(" + arg0 + ")");
-        }
-    };
-
-    @Override
-    public void connect(HRDeviceRef ref) {
-        stopScan();
-        disconnectImpl();
-        log("connect(" + Integer.parseInt(ref.deviceAddress) + ")");
-        connectRef = ref;
-        mIsConnecting = true;
-        releaseHandle = AntPlusHeartRatePcc.requestAccess(context, Integer.parseInt(ref.deviceAddress), 0,
-                resultReceiver, stateReceiver);
     }
 
     private AntPlusHeartRatePcc antDevice = null;
@@ -213,7 +84,7 @@ class AntPlus extends BtHRBase {
 
         @Override
         public void onResultReceived(AntPlusHeartRatePcc arg0,
-                RequestAccessResult arg1, DeviceState arg2) {
+                                     RequestAccessResult arg1, DeviceState arg2) {
 
             log("onResultReceived(" + arg0 + ", " + arg1 + ", " + arg2 + ")");
 
@@ -256,7 +127,7 @@ class AntPlus extends BtHRBase {
 
         @Override
         public void onNewHeartRateData(long arg0, EnumSet<EventFlag> arg1,
-                int arg2, long arg3, BigDecimal bigDecimal, AntPlusHeartRatePcc.DataState dataState) {
+                                       int arg2, long arg3, BigDecimal bigDecimal, AntPlusHeartRatePcc.DataState dataState) {
 
             switch (dataState) {
                 case LIVE_DATA:
@@ -359,6 +230,156 @@ class AntPlus extends BtHRBase {
         });
     }
 
+    private void disconnectImpl() {
+        log("disconnectImpl");
+        stopScan();
+        if (antDevice != null) {
+            antDevice.releaseAccess();
+            antDevice = null;
+        }
+        if (releaseHandle != null) {
+            releaseHandle.close();
+            releaseHandle = null;
+        }
+        mIsConnecting = false;
+        mIsConnected = false;
+    }
+
+    private final HashSet<String> mScanDevices = new HashSet<>();
+    private final IAsyncScanResultReceiver scanReceiver = new IAsyncScanResultReceiver() {
+
+        @Override
+        public void onSearchResult(final AsyncScanResultDeviceInfo arg0) {
+            log("onSearchResult(" + arg0 + ")");
+            if (hrClient == null)
+                return;
+
+            if (hrClientHandler == null)
+                return;
+
+            final HRDeviceRef ref = HRDeviceRef.create(NAME, arg0.getDeviceDisplayName(),
+                    Integer.toString(arg0.getAntDeviceNumber()));
+
+            if ((mIsConnecting || mIsConnected) &&
+                    ref.deviceAddress.equals(connectRef.deviceAddress) &&
+                    ref.deviceName.equals(connectRef.deviceName)) {
+
+                stopScan();
+                releaseHandle = AntPlusHeartRatePcc.requestAccess(context,
+                        arg0.getAntDeviceNumber(), 0,
+                        resultReceiver, stateReceiver);
+                return;
+            }
+
+            if (mScanDevices.contains(ref.deviceAddress))
+                return;
+
+            mScanDevices.add(ref.deviceAddress);
+
+            hrClientHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mIsScanning) { // NOTE: mIsScanning in user-thread
+                        hrClient.onScanResult(HRDeviceRef.create(NAME, arg0.getDeviceDisplayName(),
+                                Integer.toString(arg0.getAntDeviceNumber())));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onSearchStopped(RequestAccessResult arg0) {
+            log("onSearchStopped(" + arg0 + ")");
+        }
+    };
+
+    @Override
+    public String getName() {
+        return DISPLAY_NAME;
+    }
+
+    @Override
+    public String getProviderName() {
+        return NAME;
+    }
+
+    @Override
+    public void open(Handler handler, HRClient hrClient) {
+        log("open()");
+        this.hrClientHandler = handler;
+        this.hrClient = hrClient;
+        hrClient.onOpenResult(true);
+    }
+
+    @Override
+    public void close() {
+        HRClient client = hrClient;
+        hrClient = null;
+        stopScan();
+        disconnect();
+        if (client != null) {
+            client.onCloseResult(true);
+        }
+    }
+
+    @Override
+    public boolean isBondingDevice() {
+        return false;
+    }
+
+    @Override
+    public boolean isScanning() {
+        return mIsScanning;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return mIsConnected;
+    }
+
+    @Override
+    public boolean isConnecting() {
+        return mIsConnecting;
+    }
+
+    @Override
+    public void startScan() {
+        stopScan();
+        log("startScan()");
+        mIsScanning = true;
+        mScanDevices.clear();
+        log("startScan()->scanReceiver:" + scanReceiver.toString());
+        hrScanCtrl = AntPlusHeartRatePcc.requestAsyncScanController(context, 0, scanReceiver);
+
+        if (hrScanCtrl != null) {
+            log("startScan()->hrScanCtrl.missing..." + hrScanCtrl.getMissingDependencyPackageName());
+        }
+
+    }
+
+    @Override
+    public void stopScan() {
+        if (mIsScanning || hrScanCtrl != null)
+            log("stopScan()");
+
+        mIsScanning = false;
+        if (hrScanCtrl != null) {
+            hrScanCtrl.closeScanController();
+            hrScanCtrl = null;
+        }
+    }
+
+    @Override
+    public void connect(HRDeviceRef ref) {
+        stopScan();
+        disconnectImpl();
+        log("connect(" + Integer.parseInt(ref.deviceAddress) + ")");
+        connectRef = ref;
+        mIsConnecting = true;
+        releaseHandle = AntPlusHeartRatePcc.requestAccess(context, Integer.parseInt(ref.deviceAddress), 0,
+                resultReceiver, stateReceiver);
+    }
+
     @Override
     public void disconnect() {
         disconnectImpl();
@@ -373,21 +394,6 @@ class AntPlus extends BtHRBase {
                 }
             });
         }
-    }
-
-    private void disconnectImpl() {
-        log("disconnectImpl");
-        stopScan();
-        if (antDevice != null) {
-            antDevice.releaseAccess();
-            antDevice = null;
-        }
-        if (releaseHandle != null) {
-            releaseHandle.close();
-            releaseHandle = null;
-        }
-        mIsConnecting = false;
-        mIsConnected = false;
     }
 
     @Override
@@ -414,7 +420,9 @@ class AntPlus extends BtHRBase {
         return -1;
     }
 
-    /** it seems ANT+ requires Bluetooth too */
+    /**
+     * it seems ANT+ requires Bluetooth too
+     */
 
     @Override
     public boolean isEnabled() {

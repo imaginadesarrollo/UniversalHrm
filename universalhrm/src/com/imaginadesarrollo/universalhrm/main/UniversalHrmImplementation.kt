@@ -125,7 +125,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     /** PRESENTER IMPLEMENTATION **/
 
     private fun load() {
-        if (!selectedHr?.name.isNullOrBlank()) {
+        if (!selectedHr?.name.isNullOrBlank() && selectedHr != null) {
             Log.d(TAG, "HRManager.get(${selectedHr!!.provider})")
             hrProvider = HRManager.getHRProvider(activity, selectedHr!!.provider)
         }
@@ -286,8 +286,10 @@ internal class UniversalHrmImplementation(private val activity: android.support.
             callback.onDeviceConnected()
             callback.setHeartRateMonitorName(hrProvider.name)
             callback.setHeartRateMonitorProviderName(hrProvider.providerName)
-            callback.setHeartRateMonitorAddress(selectedHr!!.address)
-            saveDevice(hrProvider.name, selectedHr!!.address, hrProvider.providerName)
+            if (selectedHr != null) {
+                callback.setHeartRateMonitorAddress(selectedHr!!.address)
+                saveDevice(hrProvider.name, selectedHr!!.address, hrProvider.providerName)
+            }
             if (hrProvider.batteryLevel > 0) {
                 val level = hrProvider.batteryLevel
                 callback.setBatteryLevel(level)

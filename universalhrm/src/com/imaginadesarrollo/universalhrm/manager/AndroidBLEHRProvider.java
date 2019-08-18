@@ -507,10 +507,12 @@ class AndroidBLEHRProvider extends BtHRBase implements HRProvider {
 
         mIsScanning = true;
         mScanDevices.clear();
-        if (AVOID_SCAN_WITH_UUID)
-            btAdapter.startLeScan(mLeScanCallback);
-        else
-            btAdapter.startLeScan(SCAN_UUIDS, mLeScanCallback);
+        if (btAdapter != null) {
+            if (AVOID_SCAN_WITH_UUID)
+                btAdapter.startLeScan(mLeScanCallback);
+            else
+                btAdapter.startLeScan(SCAN_UUIDS, mLeScanCallback);
+        }
     }
 
     @Override

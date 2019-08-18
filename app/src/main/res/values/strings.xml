@@ -10,7 +10,7 @@
 
     <string name="disconnect">Disconnect</string>
     <string name="connecting">Connecting</string>
-    <string name="connect">connect</string>
+    <string name="connect">Connect</string>
     <string name="heart_rate_monitor_is_not_supported_for_your_device">Heart rate monitor is not supported for your device</string>
 
 </resources>

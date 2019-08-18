@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/edit_name"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical" >
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/small_margin"
-        android:text="@string/select_type_of_Bluetooth_device"/>
+        android:text="@string/select_a_device"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/deviceRecyclerView"
@@ -26,18 +26,20 @@
 
         <Button
             android:id="@+id/buttonNeg"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@android:string/cancel"
+            android:layout_weight="1"
             android:inputType="textCapSentences" />
 
         <Button
             android:id="@+id/buttonPos"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@string/connect"
+            android:layout_weight="1"
             android:inputType="textCapSentences" />
 
     </LinearLayout>
