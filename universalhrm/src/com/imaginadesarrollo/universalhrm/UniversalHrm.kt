@@ -10,11 +10,11 @@ class UniversalHrm(activity: AppCompatActivity, callbackMethods: HrmCallbackMeth
 
     override fun scan() = universalHrmImplementatiom.scan()
 
-    /*override fun connect() = universalHrmImplementatiom.connect()
+    override fun connect() = universalHrmImplementatiom.connect()
 
     override fun disconnect() = universalHrmImplementatiom.disconnect()
 
     override fun isConnected(): Boolean = universalHrmImplementatiom.isConnected()
 
-    override fun isThereSavedDevice(): Boolean = universalHrmImplementatiom.isThereSavedDevice()*/
+    override fun isThereSavedDevice(): Boolean = universalHrmImplementatiom.isThereSavedDevice()
 }
