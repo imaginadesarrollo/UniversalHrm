@@ -33,6 +33,7 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
                 .withPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                        // TODO remember to enable GPS.
                         universalHrm.scan()
                         connectButton.isEnabled = true
                     }
