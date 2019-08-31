@@ -1,6 +1,7 @@
 package com.imaginadesarrollo.universalhrm.main
 
 import android.support.v7.app.AlertDialog
+import android.widget.ArrayAdapter
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
 import com.imaginadesarrollo.universalhrm.R
 import com.imaginadesarrollo.universalhrm.main.ant.AntImplementation
@@ -18,11 +19,19 @@ internal class UniversalHrmImplementation(private val activity: android.support.
 
 
     override fun scan() {
-        // TODO:  Create an AlertDialog to choose between Bluetooth and ANT+ types
 
-        //showBluetoothSelector()
+        val adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, listOf("Ant", "Bluettoth"))
+        val dialog = AlertDialog.Builder(activity).run {
+            setAdapter(adapter) { dialog, which ->  when(which){
+                0 -> showAntSelector()
+                else -> showBluetoothSelector()
+            }
+            }
+            setNegativeButton(android.R.string.cancel, null)
+            setTitle(R.string.select_type_of_Bluetooth_device)
+            show()
+        }
 
-        showAntSelector()
     }
 
     private fun showAntSelector(){
