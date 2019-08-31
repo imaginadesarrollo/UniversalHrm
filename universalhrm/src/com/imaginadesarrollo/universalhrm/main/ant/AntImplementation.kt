@@ -2,8 +2,14 @@ package com.imaginadesarrollo.universalhrm.main.ant
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.CheckedTextView
 import android.widget.Toast
 import com.dsi.ant.plugins.antplus.pcc.AntPlusHeartRatePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.DeviceState
@@ -11,21 +17,20 @@ import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
 import com.dsi.ant.plugins.antplus.pccbase.AntPluginPcc
 import com.dsi.ant.plugins.antplus.pccbase.AsyncScanController
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
+import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
+import com.imaginadesarrollo.universalhrm.main.bluetooth.HrmConnection
 
 
 /**
  * Created by Kike Bodi (bodi.inf@gamil.com) on 2019-08-25.
  * Copyright by Imagina desarrollo. All rights reserved.
  */
-class AntImplementation(val activity: Activity) {
-  
+class AntImplementation(private val context: Context,
+                        private val callback: HrmCallbackMethods): HrmConnection {
+
   protected var releaseHandle: PccReleaseHandle<AntPlusHeartRatePcc>? = null
   internal var hrScanCtrl: AsyncScanController<AntPlusHeartRatePcc>? = null
-  
-  init {
-    handleReset()
-  }
-  
+
   /**
    * Resets the PCC connection to request access again and clears any existing display data.
    */
@@ -43,18 +48,16 @@ class AntImplementation(val activity: Activity) {
       if(it.antDeviceNumber == device.antDeviceNumber) return
     }
     scannedDevices.add(device)
-    
-    //TODO remove this. Only for test.
-    requestConnectToResult(device)
+    adapter.notifyDataSetChanged()
   }
   
   /**
    * Requests the asynchronous scan controller
    */
-  protected fun requestAccessToPcc() {
+  private fun requestAccessToPcc() {
     //initScanDisplay()
     hrScanCtrl = AntPlusHeartRatePcc.requestAsyncScanController(
-      activity,
+      context,
       0,
       object : AsyncScanController.IAsyncScanResultReceiver {
         
@@ -79,16 +82,16 @@ class AntImplementation(val activity: Activity) {
    */
   protected fun requestConnectToResult(asyncScanResultDeviceInfo: AsyncScanController.AsyncScanResultDeviceInfo) {
     //Inform the user we are connecting
-    activity.runOnUiThread {
+    (context as Activity).runOnUiThread {
       //mTextView_Status.setText("Connecting to " + asyncScanResultDeviceInfo.deviceDisplayName)
       releaseHandle = hrScanCtrl?.requestDeviceAccess(
         asyncScanResultDeviceInfo,
         AntPluginPcc.IPluginAccessResultReceiver { result, resultCode, initialDeviceState ->
           if (resultCode == RequestAccessResult.SEARCH_TIMEOUT) {
             //On a connection timeout the scan automatically resumes, so we inform the user, and go back to scanning
-            activity.runOnUiThread {
+            (context as Activity).runOnUiThread {
               Toast.makeText(
-                activity,
+                context,
                 "Timed out attempting to connect, try again",
                 Toast.LENGTH_LONG
               ).show()
@@ -124,7 +127,7 @@ class AntImplementation(val activity: Activity) {
         }
         RequestAccessResult.CHANNEL_NOT_AVAILABLE -> {
           Toast.makeText(
-            activity,
+            context,
             "Channel Not Available",
             Toast.LENGTH_SHORT
           ).show()
@@ -132,7 +135,7 @@ class AntImplementation(val activity: Activity) {
         }
         RequestAccessResult.ADAPTER_NOT_DETECTED -> {
           Toast.makeText(
-            activity,
+                  context,
             "ANT Adapter Not Available. Built-in ANT hardware or external adapter required.",
             Toast.LENGTH_SHORT
           ).show()
@@ -142,7 +145,7 @@ class AntImplementation(val activity: Activity) {
         RequestAccessResult.OTHER_FAILURE -> {}
         RequestAccessResult.DEPENDENCY_NOT_INSTALLED -> {
           //tv_status.setText("Error. Do Menu->Reset.")
-          val adlgBldr = AlertDialog.Builder(activity)
+          val adlgBldr = AlertDialog.Builder(context)
           adlgBldr.setTitle("Missing Dependency")
           adlgBldr.setMessage("The required service\n\"" + AntPlusHeartRatePcc.getMissingDependencyName() + "\"\n was not found. You need to install the ANT+ Plugins service or you may need to update your existing version if you already have it. Do you want to launch the Play Store to get it?")
           adlgBldr.setCancelable(true)
@@ -155,8 +158,8 @@ class AntImplementation(val activity: Activity) {
               Uri.parse("market://details?id=" + AntPlusHeartRatePcc.getMissingDependencyPackageName())
             )
             startStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            
-            activity.startActivity(startStore)
+
+            context.startActivity(startStore)
           }
           adlgBldr.setNegativeButton(
             "Cancel"
@@ -175,26 +178,64 @@ class AntImplementation(val activity: Activity) {
    */
   fun subscribeToHrEvents(hrPcc: AntPlusHeartRatePcc) {
     hrPcc.subscribeHeartRateDataEvent(AntPlusHeartRatePcc.IHeartRateDataReceiver { estTimestamp, eventFlags, computedHeartRate, heartBeatCount, heartBeatEventTime, dataState ->
-      // Mark heart rate with asterisk if zero detected
-      val textHeartRate =
-        computedHeartRate.toString() + if (AntPlusHeartRatePcc.DataState.ZERO_DETECTED == dataState) "*" else ""
-      
-      // Mark heart beat count and heart beat event time with asterisk if initial value
-      val textHeartBeatCount =
-        heartBeatCount.toString() + if (AntPlusHeartRatePcc.DataState.INITIAL_VALUE == dataState) "*" else ""
-      val textHeartBeatEventTime =
-        heartBeatEventTime.toString() + if (AntPlusHeartRatePcc.DataState.INITIAL_VALUE == dataState) "*" else ""
-      
-      
+      (context as Activity).runOnUiThread {
+        callback.setHeartRateValue(computedHeartRate)
+      }
     })
     
-    hrPcc.subscribeManufacturerAndSerialEvent { estTimestamp, eventFlags, manufacturerID, serialNumber ->
+    hrPcc.subscribeManufacturerAndSerialEvent { estTimestamp, eventFlags, manufacturerID, serialNumber -> }
     
-    }
-    
-    hrPcc.subscribeVersionAndModelEvent { estTimestamp, eventFlags, hardwareVersion, softwareVersion, modelNumber ->
-    
+    hrPcc.subscribeVersionAndModelEvent { estTimestamp, eventFlags, hardwareVersion, softwareVersion, modelNumber -> }
+  }
+
+
+  /** New implementation **/
+
+  private lateinit var adapter: AntDeviceAdapter
+  private var dialogCallback: HrmConnection.AlertDialogCallback? = null
+
+
+  override fun getAdapter(): AntDeviceAdapter {
+    // this call means that we should start looking for data
+    adapter = AntDeviceAdapter(context)
+    handleReset()
+    return adapter
+  }
+
+  override fun disconnect() {
+    releaseHandle?.close()
+    hrScanCtrl?.closeScanController()
+    dialogCallback?.close()
+  }
+
+  override fun addAlertDialogCallback(callback: HrmConnection.AlertDialogCallback) {
+    dialogCallback = callback
+  }
+
+  inner class AntDeviceAdapter(private val mContext: Context) : ArrayAdapter<AsyncScanController.AsyncScanResultDeviceInfo>(mContext, 0, scannedDevices) {
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
+      val listItem = convertView ?: LayoutInflater.from(mContext).inflate(android.R.layout.simple_list_item_single_choice, parent, false)
+      val deviceName = scannedDevices[position].deviceDisplayName ?: scannedDevices[position].antDeviceNumber.toString()
+      val address = scannedDevices[position].scanResultInternalIdentifier?.toString() ?: ""
+
+
+      listItem.findViewById<CheckedTextView>(android.R.id.text1).text = deviceName
+
+      listItem.setOnClickListener {
+        requestConnectToResult(scannedDevices[position])
+        dialogCallback?.close()
+
+        (context as Activity).runOnUiThread{
+          callback.setHeartRateMonitorName(deviceName)
+          callback.setHeartRateMonitorProviderName("Ant")
+          callback.setHeartRateMonitorAddress(address)
+        }
+      }
+
+      return listItem
     }
   }
-  
+
 }

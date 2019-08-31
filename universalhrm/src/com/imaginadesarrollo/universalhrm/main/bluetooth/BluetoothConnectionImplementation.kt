@@ -1,7 +1,6 @@
 package com.imaginadesarrollo.universalhrm.main.bluetooth
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.os.ParcelUuid
@@ -16,13 +15,10 @@ import com.imaginadesarrollo.universalhrm.utils.Utils
 import com.polidea.rxandroidble2.RxBleClient
 import com.polidea.rxandroidble2.RxBleDevice
 import com.polidea.rxandroidble2.scan.ScanFilter
-import com.polidea.rxandroidble2.scan.ScanResult
 import com.polidea.rxandroidble2.scan.ScanSettings
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-import io.reactivex.schedulers.Schedulers
 
 
 /**
@@ -56,7 +52,6 @@ class BluetoothConnectionImplementation(private val context: Context,
   }
 
   private fun onDeviceSelected(device: RxBleDevice) {
-    dialogCallback?.close()
     compositeDisposable.clear()
 
     callback.setHeartRateMonitorName(device.name ?: "")
@@ -132,13 +127,20 @@ class BluetoothConnectionImplementation(private val context: Context,
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
       
       val listItem = convertView ?: LayoutInflater.from(mContext).inflate(android.R.layout.simple_list_item_single_choice, parent, false)
-      
-      listItem.findViewById<CheckedTextView>(android.R.id.text1).apply {
-        text = listBluetoothDevices[position].name ?: listBluetoothDevices[position].macAddress
-      }
+      val deviceName = listBluetoothDevices[position].name ?: listBluetoothDevices[position].macAddress
+      val address = listBluetoothDevices[position].macAddress
+
+      listItem.findViewById<CheckedTextView>(android.R.id.text1).text = deviceName
       
       listItem.setOnClickListener {
         onDeviceSelected(listBluetoothDevices[position])
+        dialogCallback?.close()
+
+        (context as Activity).runOnUiThread {
+          callback.setHeartRateMonitorName(deviceName)
+          callback.setHeartRateMonitorProviderName("Bluetooth")
+          callback.setHeartRateMonitorAddress(address)
+        }
       }
       
       return listItem
