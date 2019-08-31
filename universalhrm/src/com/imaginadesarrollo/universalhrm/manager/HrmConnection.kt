@@ -1,4 +1,4 @@
-package com.imaginadesarrollo.universalhrm.main.bluetooth
+package com.imaginadesarrollo.universalhrm.manager
 
 import android.widget.ArrayAdapter
 

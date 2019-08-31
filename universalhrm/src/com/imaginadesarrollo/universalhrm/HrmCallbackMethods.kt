@@ -11,5 +11,4 @@ interface HrmCallbackMethods {
     fun scanCanceled()
     fun onDeviceConnected()
     fun onDeviceDisconnected()
-    //fun onFoundSavedInformation(hrName: String, hrAddress: String, hrProviderName:String)
 }

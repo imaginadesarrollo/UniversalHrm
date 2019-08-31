@@ -1,21 +1,21 @@
-package com.imaginadesarrollo.universalhrm.main
+package com.imaginadesarrollo.universalhrm.manager
 
 import android.support.v7.app.AlertDialog
 import android.widget.ArrayAdapter
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
 import com.imaginadesarrollo.universalhrm.R
-import com.imaginadesarrollo.universalhrm.main.ant.AntImplementation
-import com.imaginadesarrollo.universalhrm.main.bluetooth.BluetoothConnectionImplementation
-import com.imaginadesarrollo.universalhrm.main.bluetooth.HrmConnection
+import com.imaginadesarrollo.universalhrm.manager.ant.AntConnectionImpl
+import com.imaginadesarrollo.universalhrm.manager.bluetooth.BluetoothConnectionImpl
 
 
-internal class UniversalHrmImplementation(private val activity: android.support.v7.app.AppCompatActivity, private val caller: HrmCallbackMethods? = null): HrmImplementation{
+internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCompatActivity, private val caller: HrmCallbackMethods? = null): HrmManager{
 
     companion object {
         const val TAG = "UniversalHrmImpl"
     }
 
     private val callback: HrmCallbackMethods by lazy {  caller ?: (activity as HrmCallbackMethods) }
+    private var connection: HrmConnection? = null
 
 
     override fun scan() {
@@ -34,9 +34,13 @@ internal class UniversalHrmImplementation(private val activity: android.support.
 
     }
 
+    override fun disconnect() {
+
+    }
+
     private fun showAntSelector(){
-        val antConnection = AntImplementation(activity, callback) as HrmConnection
-        val adapter = antConnection.getAdapter()
+        connection = AntConnectionImpl(activity, callback) as HrmConnection
+        val adapter = connection?.getAdapter()
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { _, _ -> }
             setNegativeButton(android.R.string.cancel, null)
@@ -44,7 +48,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
             show()
         }
 
-        antConnection.addAlertDialogCallback(object : HrmConnection.AlertDialogCallback{
+        connection?.addAlertDialogCallback(object : HrmConnection.AlertDialogCallback{
             override fun close() {
                 dialog.dismiss()
             }
@@ -52,8 +56,8 @@ internal class UniversalHrmImplementation(private val activity: android.support.
     }
 
     private fun showBluetoothSelector(){
-        val bluettoothConnection = BluetoothConnectionImplementation(activity, callback) as HrmConnection
-        val adapter = bluettoothConnection.getAdapter()
+        connection = BluetoothConnectionImpl(activity, callback) as HrmConnection
+        val adapter = connection?.getAdapter()
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { _, _ -> }
             setNegativeButton(android.R.string.cancel, null)
@@ -61,7 +65,7 @@ internal class UniversalHrmImplementation(private val activity: android.support.
             show()
         }
 
-        bluettoothConnection.addAlertDialogCallback(object : HrmConnection.AlertDialogCallback{
+        connection?.addAlertDialogCallback(object : HrmConnection.AlertDialogCallback{
             override fun close() {
                 dialog.dismiss()
             }

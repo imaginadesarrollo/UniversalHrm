@@ -1,20 +1,14 @@
 package com.imaginadesarrollo.universalhrm
 
 import android.support.v7.app.AppCompatActivity
-import com.imaginadesarrollo.universalhrm.main.HrmImplementation
-import com.imaginadesarrollo.universalhrm.main.UniversalHrmImplementation
+import com.imaginadesarrollo.universalhrm.manager.HrmManager
+import com.imaginadesarrollo.universalhrm.manager.HrmManagerImpl
 
-class UniversalHrm(activity: AppCompatActivity, callbackMethods: HrmCallbackMethods? = null): HrmImplementation {
+class UniversalHrm(activity: AppCompatActivity, callbackMethods: HrmCallbackMethods? = null): HrmManager{
 
-    private val universalHrmImplementatiom = UniversalHrmImplementation(activity, callbackMethods)
+    private val universalHrmImplementatiom = HrmManagerImpl(activity, callbackMethods)
 
     override fun scan() = universalHrmImplementatiom.scan()
 
-    /*override fun connect() = universalHrmImplementatiom.connect()
-
     override fun disconnect() = universalHrmImplementatiom.disconnect()
-
-    override fun isConnected(): Boolean = universalHrmImplementatiom.isConnected()
-
-    override fun isThereSavedDevice(): Boolean = universalHrmImplementatiom.isThereSavedDevice()*/
 }

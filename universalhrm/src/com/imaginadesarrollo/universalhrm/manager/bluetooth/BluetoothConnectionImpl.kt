@@ -1,4 +1,4 @@
-package com.imaginadesarrollo.universalhrm.main.bluetooth
+package com.imaginadesarrollo.universalhrm.manager.bluetooth
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
+import com.imaginadesarrollo.universalhrm.manager.HrmConnection
 import com.imaginadesarrollo.universalhrm.utils.Utils
 import com.polidea.rxandroidble2.RxBleClient
 import com.polidea.rxandroidble2.RxBleDevice
@@ -25,8 +26,8 @@ import io.reactivex.functions.BiFunction
  * Created by Kike Bodi (bodi.inf@gmail.com) on 2019-08-27.
  * Copyright by Imagina Desarrollo. All rights reserved.
  */
-class BluetoothConnectionImplementation(private val context: Context,
-                                        private val callback: HrmCallbackMethods)
+class BluetoothConnectionImpl(private val context: Context,
+                              private val callback: HrmCallbackMethods)
   : HrmConnection {
 
   override fun addAlertDialogCallback(callback: HrmConnection.AlertDialogCallback) {

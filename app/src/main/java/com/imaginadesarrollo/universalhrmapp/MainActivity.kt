@@ -24,8 +24,6 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
         scanButton.setOnClickListener {
             checkPermissionsAndScan()
         }
-
-        //universalHrm.disconnect()
     }
 
     private fun checkPermissionsAndScan(){
@@ -76,7 +74,7 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
         connectButton.visibility = View.VISIBLE
         connectButton.text = getString(R.string.disconnect)
         connectButton.setOnClickListener {
-            //universalHrm.disconnect()
+            universalHrm.disconnect()
         }
     }
 

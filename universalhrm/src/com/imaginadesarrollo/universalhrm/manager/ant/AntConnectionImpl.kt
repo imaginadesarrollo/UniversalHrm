@@ -1,4 +1,4 @@
-package com.imaginadesarrollo.universalhrm.main.ant
+package com.imaginadesarrollo.universalhrm.manager.ant
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -18,14 +18,14 @@ import com.dsi.ant.plugins.antplus.pccbase.AntPluginPcc
 import com.dsi.ant.plugins.antplus.pccbase.AsyncScanController
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
-import com.imaginadesarrollo.universalhrm.main.bluetooth.HrmConnection
+import com.imaginadesarrollo.universalhrm.manager.HrmConnection
 
 
 /**
  * Created by Kike Bodi (bodi.inf@gamil.com) on 2019-08-25.
  * Copyright by Imagina desarrollo. All rights reserved.
  */
-class AntImplementation(private val context: Context,
+class AntConnectionImpl(private val context: Context,
                         private val callback: HrmCallbackMethods): HrmConnection {
 
   protected var releaseHandle: PccReleaseHandle<AntPlusHeartRatePcc>? = null
