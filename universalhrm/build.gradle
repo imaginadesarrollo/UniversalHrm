@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation files('./ANT-Android-SDKs/ANT+_Android_SDK/API/antpluginlib_3-6-0.jar')
+    implementation files('./lib/antpluginlib_3-6-0.jar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:recyclerview-v7:$project.supportVersion"
     implementation "com.android.support:appcompat-v7:$project.supportVersion"
