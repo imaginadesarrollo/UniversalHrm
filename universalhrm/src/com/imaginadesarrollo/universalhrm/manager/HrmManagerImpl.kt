@@ -28,7 +28,7 @@ internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCo
             }
             }
             setNegativeButton(android.R.string.cancel, null)
-            setTitle(R.string.select_type_of_Bluetooth_device)
+            setTitle(R.string.hrm_select_type_of_connection)
             show()
         }
 
@@ -44,7 +44,7 @@ internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCo
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { _, _ -> }
             setNegativeButton(android.R.string.cancel, null)
-            setTitle(R.string.select_type_of_Bluetooth_device)
+            setTitle(R.string.hrm_select_device)
             show()
         }
 
@@ -61,7 +61,7 @@ internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCo
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { _, _ -> }
             setNegativeButton(android.R.string.cancel, null)
-            setTitle(R.string.select_type_of_Bluetooth_device)
+            setTitle(R.string.hrm_select_device)
             show()
         }
 

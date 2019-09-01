@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hrm_select_type_of_connection">Seleccione el tipo de conexión</string>
+    <string name="hrm_select_device">Seleccione dispositivo</string>
+</resources>

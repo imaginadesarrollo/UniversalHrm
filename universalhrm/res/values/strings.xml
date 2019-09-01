@@ -1,20 +1,7 @@
 <resources>
-    <string name="app_name">HRDevice</string>
 
-
-    <string name="pref_bt_experimental">pref_bt_experimental</string>
-    <string name="pref_bt_mock">pref_bt_mock</string>
-
-    <!-- new strings -->
-    <string name="battery_level">Battery level</string>
-    <string name="clear_HR_settings">Clear HR settings</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="OK">OK</string>
-    <string name="cancel">Cancel</string>
-    <string name="pref_bt_name">pref_bt_name</string>
-    <string name="pref_bt_address">pref_bt_address</string>
-    <string name="pref_bt_provider">pref_bt_provider</string>
-    <string name="connect">connect</string>
-    <string name="select_type_of_Bluetooth_device">Select type of Bluetooth device</string>
-    <string name="scanning">Scanning</string>
+    <string name="hrm_bluetooth" translatable="false">Bluetooth</string>
+    <string name="hrm_ant" translatable="false">ANT+</string>
+    <string name="hrm_select_type_of_connection">Select type of connection</string>
+    <string name="hrm_select_device">Select device</string>
 </resources>
