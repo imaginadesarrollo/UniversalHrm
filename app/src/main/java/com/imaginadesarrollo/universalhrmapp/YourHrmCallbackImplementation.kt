@@ -7,6 +7,10 @@ import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
  * @author Kike Bodi (bodi.inf@gmail.com) on 23/01/2019
  */
 class YourHrmCallbackImplementation: HrmCallbackMethods {
+    override fun onConnectionRequest() {
+        // implement
+    }
+
     override fun deviceNotSupported() {
         // implement
     }

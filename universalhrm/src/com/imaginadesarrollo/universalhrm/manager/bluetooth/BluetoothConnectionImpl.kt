@@ -82,10 +82,7 @@ class BluetoothConnectionImpl(private val context: Context,
                       BiFunction<Int, Observable<Observable<ByteArray>>, Pair<Int, Observable<Observable<ByteArray>>>> { t1, t2 -> Pair(t1, t2) })
             }
             .onErrorReturn { Pair(-1, Observable.just(Observable.just(byteArrayOf()))) }
-            .doOnSubscribe {
-              //customBuilder.dismiss()
-              callback.onDeviceConnected()
-            }
+            .doOnSubscribe { callback.onConnectionRequest() }
             .doOnComplete { callback.onDeviceDisconnected() }
             .subscribe {
               (context as Activity).runOnUiThread {
@@ -99,6 +96,7 @@ class BluetoothConnectionImpl(private val context: Context,
                         .subscribe { hrValue ->
                           context.runOnUiThread {
                             // Workaround to be able to post on UI.
+                            callback.onDeviceConnected()
                             callback.setHeartRateValue(hrValue)
                           }
                         }

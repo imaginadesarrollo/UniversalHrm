@@ -8,6 +8,7 @@ interface HrmCallbackMethods {
     fun setHeartRateMonitorAddress(address: String)
     fun setHeartRateMonitorProviderName(providerName: String)
     fun deviceNotSupported()
+    fun onConnectionRequest()
     fun onDeviceConnected()
     fun onDeviceDisconnected()
 }

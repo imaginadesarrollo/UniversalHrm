@@ -1,5 +1,9 @@
 package com.imaginadesarrollo.universalhrmapp
 
+import android.app.ProgressDialog
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -16,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMethods {
 
     private val universalHrm: UniversalHrm by lazy { UniversalHrm(this) }
+    private var loading: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +35,7 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
         }
     }
 
-    private fun checkPermissionsAndScan(){
+    private fun checkPermissionsAndScan() {
         Dexter.withActivity(this)
                 .withPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 .withListener(object : PermissionListener {
@@ -39,6 +44,7 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
                         universalHrm.scan()
                         connectButton.isEnabled = true
                     }
+
                     override fun onPermissionDenied(response: PermissionDeniedResponse) {}
                     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {}
                 }).check()
@@ -53,26 +59,31 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
     }
 
     override fun setHeartRateMonitorName(name: String) {
-        if(name.isNotBlank())
+        if (name.isNotBlank())
             deviceName.text = name
     }
 
     override fun setHeartRateMonitorAddress(address: String) {
-        if(address.isNotBlank())
+        if (address.isNotBlank())
             deviceAddress.text = address
     }
 
     override fun setHeartRateMonitorProviderName(pName: String) {
-        if(pName.isNotBlank())
+        if (pName.isNotBlank())
             providerName.text = pName
     }
 
     override fun deviceNotSupported() =
-        Toast.makeText(this, R.string.heart_rate_monitor_is_not_supported_for_your_device, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.heart_rate_monitor_is_not_supported_for_your_device, Toast.LENGTH_LONG).show()
 
+    override fun onConnectionRequest() {
+        loading?.dismiss()
+        loading = showLoadingDialog(this)
+    }
 
     override fun onDeviceConnected() {
         connectButton.visibility = View.VISIBLE
+        loading?.dismiss()
     }
 
     override fun onDeviceDisconnected() {
@@ -80,11 +91,28 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
         resetFields()
     }
 
-    private fun resetFields(){
+    private fun resetFields() {
         deviceName.text = getString(R.string.device_name_empty)
         deviceAddress.text = getString(R.string.device_address_empty)
         providerName.text = getString(R.string.device_provider_empty)
         batteryLevel.text = getString(R.string.battery_level_value, 0)//"Battery level: 0"
         hrValue.text = getString(R.string.bpms, 0)//"0 bpm"
     }
+
+    companion object{
+        fun showLoadingDialog(context: Context): ProgressDialog {
+            val progressDialog = ProgressDialog(context)
+            progressDialog.show()
+            if (progressDialog.window != null) {
+                progressDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
+            progressDialog.setContentView(R.layout.progress_dialog)
+            progressDialog.isIndeterminate = true
+            progressDialog.setCancelable(false)
+            progressDialog.setCanceledOnTouchOutside(false)
+            return progressDialog
+        }
+    }
+
+
 }
