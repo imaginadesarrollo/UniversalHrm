@@ -55,28 +55,20 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
 
     override fun setHeartRateValue(value: Int) {}
 }
-
 ```
 
-## To clone the repo:
 
-```
-git clone https://github.com/imaginadesarrollo/UniversalHrm
-cd UniversalHrm/universalhrm/
-git clone https://github.com/ant-wireless/ANT-Android-SDKs
-
-```
 
 ## Tested devices:
 
 - Polar H7
+- CooSpo
+- Garmin HRM-Dual
+- Suunto Dual Comfort Belt
 
 ## Devices to test #helpneeded:
 
 - Zephyr Chest strap (Bluetooth)
-- Garmin Chest strap (Ant+)
-- Suunto Chest strap (Ant+)
-
 
 ## Wishlist:
 
