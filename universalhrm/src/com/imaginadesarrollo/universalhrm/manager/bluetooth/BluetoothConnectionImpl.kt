@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
+import com.imaginadesarrollo.universalhrm.R
 import com.imaginadesarrollo.universalhrm.manager.HrmConnection
 import com.imaginadesarrollo.universalhrm.utils.Utils
 import com.polidea.rxandroidble2.RxBleClient
@@ -63,10 +64,6 @@ class BluetoothConnectionImpl(private val context: Context,
 
   private fun onDeviceSelected(device: RxBleDevice) {
     compositeDisposable.clear()
-
-    callback.setHeartRateMonitorName(device.name ?: "")
-    callback.setHeartRateMonitorAddress(device.macAddress)
-    callback.setHeartRateMonitorProviderName("Bluetooth")
 
     val deviceConnectionDisposable = rxBleClient.getBleDevice(device.macAddress)
             .establishConnection(true)
@@ -123,13 +120,9 @@ class BluetoothConnectionImpl(private val context: Context,
           adapter.notifyDataSetChanged()
         }
       }
-    
     compositeDisposable.add(scanDisposable)
   }
-  
-  
-  
-  
+
   inner class BluetoothDeviceAdapter(private val mContext: Context) : ArrayAdapter<RxBleDevice>(mContext, 0, listBluetoothDevices) {
     
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -146,7 +139,7 @@ class BluetoothConnectionImpl(private val context: Context,
 
         (context as Activity).runOnUiThread {
           callback.setHeartRateMonitorName(deviceName)
-          callback.setHeartRateMonitorProviderName("Bluetooth")
+          callback.setHeartRateMonitorProviderName(context.getText(R.string.hrm_bluetooth).toString())
           callback.setHeartRateMonitorAddress(address)
         }
       }

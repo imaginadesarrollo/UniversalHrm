@@ -17,6 +17,7 @@ import com.dsi.ant.plugins.antplus.pccbase.AntPluginPcc
 import com.dsi.ant.plugins.antplus.pccbase.AsyncScanController
 import com.dsi.ant.plugins.antplus.pccbase.PccReleaseHandle
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
+import com.imaginadesarrollo.universalhrm.R
 import com.imaginadesarrollo.universalhrm.manager.HrmConnection
 
 
@@ -206,7 +207,7 @@ class AntConnectionImpl(private val context: Context,
 
         (context as Activity).runOnUiThread{
           callback.setHeartRateMonitorName(deviceName)
-          callback.setHeartRateMonitorProviderName("Ant")
+          callback.setHeartRateMonitorProviderName(context.getText(R.string.hrm_ant).toString())
           callback.setHeartRateMonitorAddress(address)
         }
       }

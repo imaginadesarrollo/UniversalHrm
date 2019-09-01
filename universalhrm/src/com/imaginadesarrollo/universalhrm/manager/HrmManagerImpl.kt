@@ -20,11 +20,12 @@ internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCo
 
     override fun scan() {
 
-        val adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, listOf("Ant", "Bluettoth"))
+        val connectionTypesList = listOf(activity.getText(R.string.hrm_bluetooth), activity.getText(R.string.hrm_ant))
+        val adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, connectionTypesList)
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { dialog, which ->  when(which){
-                0 -> showAntSelector()
-                else -> showBluetoothSelector()
+                0 -> showBluetoothSelector()
+                else -> showAntSelector()
             }
             }
             setNegativeButton(android.R.string.cancel, null)
