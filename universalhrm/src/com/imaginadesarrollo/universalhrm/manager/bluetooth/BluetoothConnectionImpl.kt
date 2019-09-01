@@ -20,6 +20,8 @@ import com.polidea.rxandroidble2.scan.ScanSettings
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.internal.functions.Functions.emptyConsumer
+import io.reactivex.plugins.RxJavaPlugins
 
 
 /**
@@ -29,6 +31,13 @@ import io.reactivex.functions.BiFunction
 class BluetoothConnectionImpl(private val context: Context,
                               private val callback: HrmCallbackMethods)
   : HrmConnection {
+
+  init {
+    // When we clear the CompositeDisposable there is a crash on RxAndroidBle library.
+    // Solution found here:
+    // https://stackoverflow.com/questions/42988269/handling-exceptions-inside-observable-fromcallable-when-subscription-gets-clea/42992085#42992085
+    RxJavaPlugins.setErrorHandler(emptyConsumer())
+  }
 
   override fun addAlertDialogCallback(callback: HrmConnection.AlertDialogCallback) {
     dialogCallback = callback
@@ -72,12 +81,12 @@ class BluetoothConnectionImpl(private val context: Context,
                       heartRateObs,
                       BiFunction<Int, Observable<Observable<ByteArray>>, Pair<Int, Observable<Observable<ByteArray>>>> { t1, t2 -> Pair(t1, t2) })
             }
+            .onErrorReturn { Pair(-1, Observable.just(Observable.just(byteArrayOf()))) }
             .doOnSubscribe {
               //customBuilder.dismiss()
               callback.onDeviceConnected()
             }
             .doOnComplete { callback.onDeviceDisconnected() }
-            .onErrorReturn { Pair(-1, Observable.just(Observable.just(byteArrayOf()))) }
             .subscribe {
               (context as Activity).runOnUiThread {
                 // Workaround to be able to post on UI.

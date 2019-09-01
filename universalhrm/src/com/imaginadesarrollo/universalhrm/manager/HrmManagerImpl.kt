@@ -35,7 +35,7 @@ internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCo
     }
 
     override fun disconnect() {
-
+        connection?.disconnect()
     }
 
     private fun showAntSelector(){

@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckedTextView
-import android.widget.Toast
 import com.dsi.ant.plugins.antplus.pcc.AntPlusHeartRatePcc
 import com.dsi.ant.plugins.antplus.pcc.defines.DeviceState
 import com.dsi.ant.plugins.antplus.pcc.defines.RequestAccessResult
@@ -89,14 +88,7 @@ class AntConnectionImpl(private val context: Context,
         AntPluginPcc.IPluginAccessResultReceiver { result, resultCode, initialDeviceState ->
           if (resultCode == RequestAccessResult.SEARCH_TIMEOUT) {
             //On a connection timeout the scan automatically resumes, so we inform the user, and go back to scanning
-            (context as Activity).runOnUiThread {
-              Toast.makeText(
-                context,
-                "Timed out attempting to connect, try again",
-                Toast.LENGTH_LONG
-              ).show()
-              //mTextView_Status.setText("Scanning for heart rate devices asynchronously...")
-            }
+            callback.onDeviceDisconnected()
           } else {
             //Otherwise the results, including SUCCESS, behave the same as
             base_IPluginAccessResultReceiver.onResultReceived(
@@ -123,26 +115,9 @@ class AntConnectionImpl(private val context: Context,
       //Handle the result, connecting to events on success or reporting failure to user.
       when (resultCode) {
         RequestAccessResult.SUCCESS -> {
+          callback.onDeviceConnected()
           subscribeToHrEvents(result)
         }
-        RequestAccessResult.CHANNEL_NOT_AVAILABLE -> {
-          Toast.makeText(
-            context,
-            "Channel Not Available",
-            Toast.LENGTH_SHORT
-          ).show()
-          //tv_status.setText("Error. Do Menu->Reset.")
-        }
-        RequestAccessResult.ADAPTER_NOT_DETECTED -> {
-          Toast.makeText(
-                  context,
-            "ANT Adapter Not Available. Built-in ANT hardware or external adapter required.",
-            Toast.LENGTH_SHORT
-          ).show()
-          //tv_status.setText("Error. Do Menu->Reset.")
-        }
-        RequestAccessResult.BAD_PARAMS -> {}
-        RequestAccessResult.OTHER_FAILURE -> {}
         RequestAccessResult.DEPENDENCY_NOT_INSTALLED -> {
           //tv_status.setText("Error. Do Menu->Reset.")
           val adlgBldr = AlertDialog.Builder(context)
@@ -168,8 +143,9 @@ class AntConnectionImpl(private val context: Context,
           val waitDialog = adlgBldr.create()
           waitDialog.show()
         }
-        RequestAccessResult.UNRECOGNIZED -> {}
-        else ->{}
+        else ->{
+          callback.deviceNotSupported()
+        }
       }
     }
   
@@ -206,6 +182,7 @@ class AntConnectionImpl(private val context: Context,
     releaseHandle?.close()
     hrScanCtrl?.closeScanController()
     dialogCallback?.close()
+    callback.onDeviceDisconnected()
   }
 
   override fun addAlertDialogCallback(callback: HrmConnection.AlertDialogCallback) {

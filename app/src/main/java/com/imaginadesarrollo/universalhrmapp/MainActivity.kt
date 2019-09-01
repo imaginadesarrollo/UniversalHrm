@@ -24,6 +24,10 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
         scanButton.setOnClickListener {
             checkPermissionsAndScan()
         }
+
+        connectButton.setOnClickListener {
+            universalHrm.disconnect()
+        }
     }
 
     private fun checkPermissionsAndScan(){
@@ -66,24 +70,13 @@ class MainActivity : android.support.v7.app.AppCompatActivity(), HrmCallbackMeth
     override fun deviceNotSupported() =
         Toast.makeText(this, R.string.heart_rate_monitor_is_not_supported_for_your_device, Toast.LENGTH_LONG).show()
 
-    override fun scanCanceled() {
-        // FYI
-    }
 
     override fun onDeviceConnected() {
         connectButton.visibility = View.VISIBLE
-        connectButton.text = getString(R.string.disconnect)
-        connectButton.setOnClickListener {
-            universalHrm.disconnect()
-        }
     }
 
     override fun onDeviceDisconnected() {
-        connectButton.visibility = View.VISIBLE
-        connectButton.text = getString(R.string.connect)
-        connectButton.setOnClickListener {
-            //universalHrm.connect()
-        }
+        connectButton.visibility = View.GONE
         resetFields()
     }
 

@@ -19,10 +19,6 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
         // implement
     }
 
-    override fun scanCanceled() {
-        // implement
-    }
-
     override fun setBatteryLevel(level: Int) {
         // implement
     }
