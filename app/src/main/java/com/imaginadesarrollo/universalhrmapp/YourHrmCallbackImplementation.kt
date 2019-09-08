@@ -3,10 +3,14 @@ package com.imaginadesarrollo.universalhrmapp
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
 
 /**
- * Copyright Finn Frogne A/S
- * @author Kike Bodi (ebp@frogne.dk) on 23/01/2019
+ * Copyright Imagina Desarrollo
+ * @author Kike Bodi (bodi.inf@gmail.com) on 23/01/2019
  */
 class YourHrmCallbackImplementation: HrmCallbackMethods {
+    override fun onConnectionRequest() {
+        // implement
+    }
+
     override fun deviceNotSupported() {
         // implement
     }
@@ -16,10 +20,6 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
     }
 
     override fun onDeviceDisconnected() {
-        // implement
-    }
-
-    override fun scanCanceled() {
         // implement
     }
 

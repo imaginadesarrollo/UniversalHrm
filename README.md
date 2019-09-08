@@ -35,48 +35,61 @@ class YourActivity : Activity(), HrmCallbackMethods{
     private val universalHrm: UniversalHrm by lazy { UniversalHrm(this,callback) }
     ...
 }
+```
 
+
+```
 class YourHrmCallbackImplementation: HrmCallbackMethods {
-    override fun deviceNotSupported() {}
+    override fun onConnectionRequest() {
+        // implement
+    }
 
-    override fun onDeviceConnected() {}
+    override fun deviceNotSupported() {
+        // implement
+    }
 
-    override fun onDeviceDisconnected() {}
+    override fun onDeviceConnected() {
+        // implement
+    }
 
-    override fun scanCanceled() {}
+    override fun onDeviceDisconnected() {
+        // implement
+    }
 
-    override fun setBatteryLevel(level: Int) {}
+    override fun setBatteryLevel(level: Int) {
+        // implement
+    }
 
-    override fun setHeartRateMonitorAddress(address: String) {}
+    override fun setHeartRateMonitorAddress(address: String) {
+        // implement
+    }
 
-    override fun setHeartRateMonitorName(name: String) {}
+    override fun setHeartRateMonitorName(name: String) {
+        // implement
+    }
 
-    override fun setHeartRateMonitorProviderName(providerName: String) {}
+    override fun setHeartRateMonitorProviderName(providerName: String) {
+        // implement
+    }
 
-    override fun setHeartRateValue(value: Int) {}
+    override fun setHeartRateValue(value: Int) {
+        // implement
+    }
 }
-
 ```
 
-## To clone the repo:
 
-```
-git clone https://github.com/imaginadesarrollo/UniversalHrm
-cd UniversalHrm/universalhrm/
-git clone https://github.com/ant-wireless/ANT-Android-SDKs
-
-```
 
 ## Tested devices:
 
 - Polar H7
+- CooSpo
+- Garmin HRM-Dual
+- Suunto Dual Comfort Belt
 
 ## Devices to test #helpneeded:
 
 - Zephyr Chest strap (Bluetooth)
-- Garmin Chest strap (Ant+)
-- Suunto Chest strap (Ant+)
-
 
 ## Wishlist:
 
