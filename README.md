@@ -35,25 +35,46 @@ class YourActivity : Activity(), HrmCallbackMethods{
     private val universalHrm: UniversalHrm by lazy { UniversalHrm(this,callback) }
     ...
 }
+```
 
+
+```
 class YourHrmCallbackImplementation: HrmCallbackMethods {
-    override fun deviceNotSupported() {}
+    override fun onConnectionRequest() {
+        // implement
+    }
 
-    override fun onDeviceConnected() {}
+    override fun deviceNotSupported() {
+        // implement
+    }
 
-    override fun onDeviceDisconnected() {}
+    override fun onDeviceConnected() {
+        // implement
+    }
 
-    override fun scanCanceled() {}
+    override fun onDeviceDisconnected() {
+        // implement
+    }
 
-    override fun setBatteryLevel(level: Int) {}
+    override fun setBatteryLevel(level: Int) {
+        // implement
+    }
 
-    override fun setHeartRateMonitorAddress(address: String) {}
+    override fun setHeartRateMonitorAddress(address: String) {
+        // implement
+    }
 
-    override fun setHeartRateMonitorName(name: String) {}
+    override fun setHeartRateMonitorName(name: String) {
+        // implement
+    }
 
-    override fun setHeartRateMonitorProviderName(providerName: String) {}
+    override fun setHeartRateMonitorProviderName(providerName: String) {
+        // implement
+    }
 
-    override fun setHeartRateValue(value: Int) {}
+    override fun setHeartRateValue(value: Int) {
+        // implement
+    }
 }
 ```
 
