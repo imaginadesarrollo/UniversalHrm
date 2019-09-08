@@ -6,9 +6,9 @@ import com.imaginadesarrollo.universalhrm.manager.HrmManagerImpl
 
 class UniversalHrm(activity: AppCompatActivity, callbackMethods: HrmCallbackMethods? = null): HrmManager{
 
-    private val universalHrmImplementatiom = HrmManagerImpl(activity, callbackMethods)
+    private val universalHrmImplementation = HrmManagerImpl(activity, callbackMethods)
 
-    override fun scan() = universalHrmImplementatiom.scan()
+    override fun scan() = universalHrmImplementation.scan()
 
-    override fun disconnect() = universalHrmImplementatiom.disconnect()
+    override fun disconnect() = universalHrmImplementation.disconnect()
 }

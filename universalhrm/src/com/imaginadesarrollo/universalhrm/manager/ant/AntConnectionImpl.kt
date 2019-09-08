@@ -207,7 +207,7 @@ class AntConnectionImpl(private val context: Context,
 
         (context as Activity).runOnUiThread{
           callback.setHeartRateMonitorName(deviceName)
-          callback.setHeartRateMonitorProviderName(context.getText(R.string.hrm_ant).toString())
+          callback.setHeartRateMonitorProviderName(context.getString(R.string.hrm_ant))
           callback.setHeartRateMonitorAddress(address)
         }
       }
