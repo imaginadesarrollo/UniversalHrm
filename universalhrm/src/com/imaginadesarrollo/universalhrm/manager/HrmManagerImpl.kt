@@ -1,5 +1,6 @@
 package com.imaginadesarrollo.universalhrm.manager
 
+import android.app.Activity
 import android.support.v7.app.AlertDialog
 import android.widget.ArrayAdapter
 import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
@@ -8,7 +9,7 @@ import com.imaginadesarrollo.universalhrm.manager.ant.AntConnectionImpl
 import com.imaginadesarrollo.universalhrm.manager.bluetooth.BluetoothConnectionImpl
 
 
-internal class HrmManagerImpl(private val activity: android.support.v7.app.AppCompatActivity, private val caller: HrmCallbackMethods? = null): HrmManager{
+internal class HrmManagerImpl(private val activity: Activity, private val caller: HrmCallbackMethods? = null): HrmManager{
 
     companion object {
         const val TAG = "UniversalHrmImpl"
