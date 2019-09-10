@@ -9,7 +9,7 @@ android {
         minSdkVersion project.minSdk
         targetSdkVersion project.sdk
         versionCode 1
-        versionName "2.0.0"
+        versionName rootProject.ext.libraryVersion
     }
 
     lintOptions{
@@ -44,6 +44,7 @@ def urlFile = { url, name ->
 
 dependencies {
     implementation urlFile('https://github.com/ant-wireless/ANT-Android-SDKs/raw/master/ANT%2B_Android_SDK/API/antpluginlib_3-6-0.jar', 'ant_plugin_lib')
+    //implementation files("./lib/antpluginlib_3-6-0.jar")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:recyclerview-v7:$project.supportVersion"
     implementation "com.android.support:appcompat-v7:$project.supportVersion"
