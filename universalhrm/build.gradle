@@ -29,13 +29,26 @@ android {
     }
 }
 
+def urlFile = { url, name ->
+    File file = new File("$buildDir/lib/${name}.jar")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
+
 dependencies {
-    implementation files('./lib/antpluginlib_3-6-0.jar')
+    implementation urlFile('https://github.com/ant-wireless/ANT-Android-SDKs/raw/master/ANT%2B_Android_SDK/API/antpluginlib_3-6-0.jar', 'ant_plugin_lib')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:recyclerview-v7:$project.supportVersion"
     implementation "com.android.support:appcompat-v7:$project.supportVersion"
     implementation "com.polidea.rxandroidble2:rxandroidble:1.10.1"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 }
 
 ext {
