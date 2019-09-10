@@ -6,7 +6,7 @@ Library to manage all types of heart rate monitor devices.
 
 1- Add the gradle dependency:
 ```
-implementation "com.imaginadesarrollo.universalhrm:universalhrm:1.0.1"
+implementation "com.imaginadesarrollo.universalhrm:universalhrm:2.0.0"
 ```
 
 2- Implement interface HrmCallbackMethods
