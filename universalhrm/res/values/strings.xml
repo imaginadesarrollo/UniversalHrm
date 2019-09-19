@@ -2,6 +2,7 @@
 
     <string name="hrm_bluetooth" translatable="false">Bluetooth</string>
     <string name="hrm_ant" translatable="false">ANT+</string>
+    <string name="hrm_mock" translatable="false">Mock</string>
     <string name="hrm_select_type_of_connection">Select type of connection</string>
     <string name="hrm_select_device">Select device</string>
 </resources>

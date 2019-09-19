@@ -7,6 +7,7 @@ import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
 import com.imaginadesarrollo.universalhrm.R
 import com.imaginadesarrollo.universalhrm.manager.ant.AntConnectionImpl
 import com.imaginadesarrollo.universalhrm.manager.bluetooth.BluetoothConnectionImpl
+import com.imaginadesarrollo.universalhrm.manager.mock.MockConnectionImpl
 
 
 internal class HrmManagerImpl(private val activity: Activity, private val caller: HrmCallbackMethods? = null): HrmManager{
@@ -21,12 +22,16 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
 
     override fun scan() {
 
-        val connectionTypesList = listOf(activity.getText(R.string.hrm_bluetooth), activity.getText(R.string.hrm_ant))
+        val connectionTypesList = listOf(activity.getText(R.string.hrm_bluetooth), activity.getText(R.string.hrm_ant), activity.getText(R.string.hrm_mock))
         val adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, connectionTypesList)
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { dialog, which ->  when(which){
                 0 -> showBluetoothSelector()
-                else -> showAntSelector()
+                1 -> showAntSelector()
+                else -> {
+                    dialog.dismiss()
+                    showMockSelector()
+                }
             }
             }
             setNegativeButton(android.R.string.cancel, null)
@@ -72,5 +77,9 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
                 dialog.dismiss()
             }
         })
+    }
+
+    private fun showMockSelector(){
+        connection = MockConnectionImpl(activity, callback)
     }
 }

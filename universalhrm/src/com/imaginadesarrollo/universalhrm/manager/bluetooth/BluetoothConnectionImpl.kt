@@ -86,14 +86,17 @@ class BluetoothConnectionImpl(private val context: Context,
                 // Workaround to be able to post on UI.
                 callback.setBatteryLevel(it.first)
               }
-
+              var isFirstEmission = true
               it.second.subscribe { observableByteArray ->
                 observableByteArray.map { byteArray -> Utils.decode(byteArray) }
                         .onErrorReturn { 0 }
                         .subscribe { hrValue ->
                           context.runOnUiThread {
                             // Workaround to be able to post on UI.
-                            callback.onDeviceConnected()
+                            if (isFirstEmission) {
+                              callback.onDeviceConnected()
+                              isFirstEmission = false
+                            }
                             callback.setHeartRateValue(hrValue)
                           }
                         }
