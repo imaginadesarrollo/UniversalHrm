@@ -7,6 +7,7 @@ import com.imaginadesarrollo.universalhrm.HrmCallbackMethods
 import com.imaginadesarrollo.universalhrm.R
 import com.imaginadesarrollo.universalhrm.manager.ant.AntConnectionImpl
 import com.imaginadesarrollo.universalhrm.manager.bluetooth.BluetoothConnectionImpl
+import com.imaginadesarrollo.universalhrm.manager.garmin.GarminConnectionImpl
 
 
 internal class HrmManagerImpl(private val activity: Activity, private val caller: HrmCallbackMethods? = null): HrmManager{
@@ -21,12 +22,13 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
 
     override fun scan() {
 
-        val connectionTypesList = listOf(activity.getText(R.string.hrm_bluetooth), activity.getText(R.string.hrm_ant))
+        val connectionTypesList = listOf(activity.getText(R.string.hrm_bluetooth), activity.getText(R.string.hrm_ant), "Garmin")
         val adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, connectionTypesList)
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { dialog, which ->  when(which){
                 0 -> showBluetoothSelector()
-                else -> showAntSelector()
+                1 -> showAntSelector()
+                else -> connectWithGarmin()
             }
             }
             setNegativeButton(android.R.string.cancel, null)
@@ -59,6 +61,23 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
 
     private fun showBluetoothSelector(){
         connection = BluetoothConnectionImpl(activity, callback) as HrmConnection
+        val adapter = connection?.getAdapter()
+        val dialog = AlertDialog.Builder(activity).run {
+            setAdapter(adapter) { _, _ -> }
+            setNegativeButton(android.R.string.cancel, null)
+            setTitle(R.string.hrm_select_device)
+            show()
+        }
+
+        connection?.addAlertDialogCallback(object : HrmConnection.AlertDialogCallback{
+            override fun close() {
+                dialog.dismiss()
+            }
+        })
+    }
+
+    private fun connectWithGarmin() {
+        connection = GarminConnectionImpl(activity, callback) as HrmConnection
         val adapter = connection?.getAdapter()
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { _, _ -> }
