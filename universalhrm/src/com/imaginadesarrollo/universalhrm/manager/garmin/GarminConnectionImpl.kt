@@ -128,13 +128,30 @@ class GarminConnectionImpl(private val context: Context,
                     message.forEach { str -> append(str.toString()) }
                     toString()
                 }
+                
+                if(receivedText.contentEquals(COMMAND_ERROR)) sendDisconnectCommand()
+                else if(receivedText.contains(BATTERY_TAG)){
+                    val battery = receivedText.replace(BATTERY_TAG, "").toInt()
+                    callback.setBatteryLevel(battery)
+                }
+                else if(receivedText.contains(HR_LOW_PRECISSION_TAG)){
+                    val hr = receivedText.replace(HR_LOW_PRECISSION_TAG, "").toInt()
+                    callback.setHeartRateValue(hr)
+                }
+                else if(receivedText.contains(HR_HIGH_PRECISSION_TAG)){
+                    val hr = receivedText.replace(HR_HIGH_PRECISSION_TAG, "").toInt()
+                    callback.setHeartRateValue(hr)
+                }
 
-                val textToInt = Integer.parseInt(receivedText.replace("HR2: ",""))
-                callback.setHeartRateValue(textToInt)
+                
             }
         } catch (e: InvalidStateException) {
             Toast.makeText(context, "ConnectIQ is not in a valid state", Toast.LENGTH_SHORT).show()
         }
+    }
+    
+    private fun sendDisconnectCommand(){
+    
     }
 
     val scannedDevices = mutableListOf<IQDevice>()
@@ -168,10 +185,14 @@ class GarminConnectionImpl(private val context: Context,
 
 
     companion object{
-
-        const val IQDEVICE = "IQDevice"
         const val MY_APP = "99c56bf44c8d4a6a87d2960bb6f80b73"
-
         const val TAG = "GarminConnectionImpl"
+        
+        const val COMMAND_DISCONNECT = "COMMAND_DISCONNECT"
+        const val COMMAND_ERROR = "COMMAND_ERROR"
+        const val BATTERY_TAG = "BATTERY_TAG_"
+        const val HR_LOW_PRECISSION_TAG = "HR1_"
+        const val HR_HIGH_PRECISSION_TAG = "HR2_"
+        
     }
 }
