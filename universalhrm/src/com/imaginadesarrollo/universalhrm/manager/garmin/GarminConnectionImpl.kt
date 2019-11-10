@@ -50,6 +50,7 @@ class GarminConnectionImpl(private val context: Context,
     private fun loadDevices(){
         val devices = mConnectIQ.knownDevices
         scannedDevices.addAll(devices)
+        adapter.notifyDataSetChanged()
     }
 
 
