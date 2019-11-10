@@ -8,6 +8,7 @@ import com.imaginadesarrollo.universalhrm.R
 import com.imaginadesarrollo.universalhrm.manager.ant.AntConnectionImpl
 import com.imaginadesarrollo.universalhrm.manager.bluetooth.BluetoothConnectionImpl
 import com.imaginadesarrollo.universalhrm.manager.garmin.GarminConnectionImpl
+import com.imaginadesarrollo.universalhrm.manager.mock.MockConnectionImpl
 
 
 internal class HrmManagerImpl(private val activity: Activity, private val caller: HrmCallbackMethods? = null): HrmManager{
@@ -91,5 +92,9 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
                 dialog.dismiss()
             }
         })
+    }
+
+    private fun showMockSelector(){
+        connection = MockConnectionImpl(activity, callback)
     }
 }
