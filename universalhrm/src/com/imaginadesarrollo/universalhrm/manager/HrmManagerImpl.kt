@@ -22,8 +22,13 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
 
 
     override fun scan() {
+        connection?.disconnect()
 
-        val connectionTypesList = listOf(activity.getText(R.string.hrm_bluetooth), activity.getText(R.string.hrm_ant), "Garmin")
+        val connectionTypesList = listOf(
+                activity.getText(R.string.hrm_bluetooth),
+                activity.getText(R.string.hrm_ant),
+                activity.getText(R.string.hrm_garmin)
+        )
         val adapter = ArrayAdapter(activity, android.R.layout.simple_list_item_single_choice, connectionTypesList)
         val dialog = AlertDialog.Builder(activity).run {
             setAdapter(adapter) { dialog, which ->  when(which){
@@ -41,6 +46,7 @@ internal class HrmManagerImpl(private val activity: Activity, private val caller
 
     override fun disconnect() {
         connection?.disconnect()
+        connection = null
     }
 
     private fun showAntSelector(){

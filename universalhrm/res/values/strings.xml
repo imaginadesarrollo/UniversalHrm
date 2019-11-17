@@ -3,9 +3,10 @@
     <string name="hrm_bluetooth" translatable="false">Bluetooth</string>
     <string name="hrm_ant" translatable="false">ANT+</string>
     <string name="hrm_mock" translatable="false">Mock</string>
+    <string name="hrm_garmin" translatable="false">Garmin</string>
     <string name="hrm_select_type_of_connection">Select type of connection</string>
     <string name="hrm_select_device">Select device</string>
 
-    <string name="missing_widget" translatable="false">Missing Comm Widget</string>
-    <string name="missing_widget_message" translatable="false">The Comm Widget used with this application is not installed on your ConnectIQ device.   Please install the widget and try again.</string>
+    <string name="missing_widget" translatable="false">Missing Widget</string>
+    <string name="missing_widget_message" translatable="false">The Garmin Appnaerobic Widget used with this application is not installed on your ConnectIQ device.   Please install the widget and try again.</string>
 </resources>

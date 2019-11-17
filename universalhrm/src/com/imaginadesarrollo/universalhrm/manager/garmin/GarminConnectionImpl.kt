@@ -3,6 +3,9 @@ package com.imaginadesarrollo.universalhrm.manager.garmin
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +46,7 @@ class GarminConnectionImpl(private val context: Context,
         }
 
     }
+
     private val mConnectIQ = ConnectIQ.getInstance(context, ConnectIQ.IQConnectType.WIRELESS).apply {
         initialize(context, true, listener)
     }
@@ -70,6 +74,7 @@ class GarminConnectionImpl(private val context: Context,
     override fun disconnect() {
         dialogCallback?.close()
         callback.onDeviceDisconnected()
+        mConnectIQ.shutdown(context)
     }
 
     override fun addAlertDialogCallback(callback: HrmConnection.AlertDialogCallback) {
@@ -101,25 +106,38 @@ class GarminConnectionImpl(private val context: Context,
                             appIsOpen = (status == ConnectIQ.IQOpenApplicationStatus.APP_IS_ALREADY_RUNNING)
                         }
                     } catch (ex: Exception) {
+                    } finally {
+                        registerForAppEvents(device)
                     }
                 }
 
                 override fun onApplicationNotInstalled(applicationId: String) {
-                    // The Comm widget is not installed on the device so we have
+                    // The widget is not installed on the device so we have
                     // to let the user know to install it.
                     val dialog = AlertDialog.Builder(context)
                     dialog.setTitle(R.string.missing_widget)
                     dialog.setMessage(R.string.missing_widget_message)
-                    dialog.setPositiveButton(android.R.string.ok, null)
+                    dialog.setPositiveButton(android.R.string.ok, DialogInterface.OnClickListener { _, _ ->
+                        disconnect()
+                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                            `package` = "com.garmin.android.apps.connectmobile"
+                            data = Uri.parse("https://apps.garmin.com/en-US/apps/bf1f7bd0-1c0f-4e5f-8a86-5223747f7830")
+                        }
+                        context.startActivity(intent)
+                    })
                     dialog.create().show()
                 }
 
             })
         } catch (e1: InvalidStateException) {
-        } catch (e1: ServiceUnavailableException) {
+            e1.printStackTrace()
+        } catch (e2: ServiceUnavailableException) {
+            e2.printStackTrace()
         }
+    }
 
-        // Let's register to receive messages from our application on the device.
+    private fun registerForAppEvents(device: IQDevice){
+        var connectedCallbackCalled = false
         try {
             mConnectIQ.registerForAppEvents(device, iqApp) { device, app, message, status ->
                 // We know from our Comm sample widget that it will only ever send us strings, but in case
@@ -129,7 +147,7 @@ class GarminConnectionImpl(private val context: Context,
                     message.forEach { str -> append(str.toString()) }
                     toString()
                 }
-                
+
                 if(receivedText.contentEquals(COMMAND_ERROR)) sendDisconnectCommand()
                 else if(receivedText.contains(BATTERY_TAG)){
                     val battery = receivedText.replace(BATTERY_TAG, "").toInt()
@@ -137,23 +155,33 @@ class GarminConnectionImpl(private val context: Context,
                 }
                 else if(receivedText.contains(HR_LOW_PRECISSION_TAG)){
                     val hr = receivedText.replace(HR_LOW_PRECISSION_TAG, "").toInt()
+                    if(!connectedCallbackCalled){
+                        callback.onDeviceConnected()
+                        connectedCallbackCalled = true
+                    }
                     callback.setHeartRateValue(hr)
                 }
                 else if(receivedText.contains(HR_HIGH_PRECISSION_TAG)){
                     val hr = receivedText.replace(HR_HIGH_PRECISSION_TAG, "").toInt()
+                    if(!connectedCallbackCalled){
+                        callback.onDeviceConnected()
+                        connectedCallbackCalled = true
+                    }
                     callback.setHeartRateValue(hr)
                 }
 
-                
+
             }
         } catch (e: InvalidStateException) {
             Toast.makeText(context, "ConnectIQ is not in a valid state", Toast.LENGTH_SHORT).show()
         }
     }
-    
+
     private fun sendDisconnectCommand(){
     
     }
+
+
 
     val scannedDevices = mutableListOf<IQDevice>()
     inner class GarminDeviceAdapter(context: Context): ArrayAdapter<IQDevice>(context, 0, scannedDevices){
@@ -187,6 +215,7 @@ class GarminConnectionImpl(private val context: Context,
 
     companion object{
         const val MY_APP = "99c56bf44c8d4a6a87d2960bb6f80b73"
+        //bf1f7bd0-1c0f-4e5f-8a86-5223747f7830
         const val TAG = "GarminConnectionImpl"
         
         const val COMMAND_DISCONNECT = "COMMAND_DISCONNECT"
