@@ -1,6 +1,6 @@
 # UniversalHrm
 
-Library to manage all types of heart rate monitor devices.
+An Android library to handle most of the heart rate monitor vendors, both Bluetooth and ANT+.
 
 ## How to use it:
 
@@ -80,14 +80,14 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
 
 
 
-## Tested devices:
+## Tested heart rate monitors:
 
 - Polar H7
 - CooSpo
 - Garmin HRM-Dual
 - Suunto Dual Comfort Belt
 
-## Devices to test #helpneeded:
+## Heart rate monitors to test #helpneeded:
 
 - Zephyr Chest strap (Bluetooth)
 
@@ -96,6 +96,10 @@ class YourHrmCallbackImplementation: HrmCallbackMethods {
 - Apple Watch
 - Fitbit Charge 3
 - Garmin Vivoactive 3
+
+## Support
+
+Technical questions should be posted using the [universalhrm tag](https://stackoverflow.com/questions/tagged/universalhrm) on StackOverflow.
 
 ## License
 Unless otherwise stated, the code for this project is under GNU GPL v3. See [LICENSE](LICENSE) for more information.
